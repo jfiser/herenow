@@ -12,18 +12,30 @@
   }
   
   
-  @media (max-width:400px){
+  @media (max-width:800px){
     #map, #pano {
-      float: left;
-      height: 50%;
+      height: 47%;
       width: 100%;
+      position:absolute;
+    }
+    #pano{
+      top:0px;
+    }
+    #map{
+      bottom:0px;
     }
   }
-  @media (min-width:401px){
+  @media (min-width:801px){
     #map, #pano {
-      float: left;
+      position:relative;
       height: 100%;
-      width: 50%;
+      width: 47%;
+    }
+    #pano{
+      float:left;
+    }
+    #map{
+      float:right;
     }
   }
   /*@media (max-device-width:500px){
@@ -55,7 +67,7 @@
 
       var map = new google.maps.Map(document.getElementById('map'), {
         center: latLongObj,
-        zoom: 14
+        zoom: 18
       });
       var panorama = new google.maps.StreetViewPanorama(
           document.getElementById('pano'), {

@@ -52,49 +52,126 @@
       width: 50%;
     }
   }*/
+
+/* searchBox */
+    .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 300px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+      #target {
+        width: 345px;
+      }
+
+
   
 </style>
 </head>
 <body>
+  <input id="pac-input" class="controls" type="text" placeholder="Search Box">
   <div id="map"></div>
   <div id="pano"></div>
   <script>
+  var panorama, map, streetView, searchBox, input;
 
-    function showStreet(_latLongObj) {
-      //var fenway = {lat: 42.345573, lng: -71.098326};
-      var latLongObj = {lat:_latLongObj.coords.latitude, lng:_latLongObj.coords.longitude};
-      //var latLongObj = {lat: 42.345573, lng: -71.098326};;
+  function showStreet(_latLongObj) {
+    //var fenway = {lat: 42.345573, lng: -71.098326};
+    var latLongObj = {lat:_latLongObj.coords.latitude, lng:_latLongObj.coords.longitude};
+    //var latLongObj = {lat: 42.345573, lng: -71.098326};;
+    input = document.getElementById('pac-input');
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: latLongObj,
+      zoom: 18
+    });
+    searchBox = new SearchPlaces(input, map, streetView);
 
-      var map = new google.maps.Map(document.getElementById('map'), {
-        center: latLongObj,
-        zoom: 18
+    panorama = new google.maps.StreetViewPanorama(
+        document.getElementById('pano'), {
+          position: latLongObj,
+          pov: {
+            heading: 34,
+            pitch: 10
+          }
+        });
+    streetView = new google.maps.StreetViewService();
+
+
+    map.setStreetView(panorama);
+    panorama.addListener('pano_changed', function() {
+          console.log("panoChange: " + panorama.getPano());
       });
-      var panorama = new google.maps.StreetViewPanorama(
-          document.getElementById('pano'), {
-            position: latLongObj,
-            pov: {
-              heading: 34,
-              pitch: 10
-            }
-          });
-      map.setStreetView(panorama);
+    map.addListener('click', function(event) {
+        streetView.getPanorama({location: event.latLng, radius: 50}, processStreetViewData);
+      });
+  }
+
+  function processStreetViewData(data, status) {
+      if (status === google.maps.StreetViewStatus.OK) {
+        panorama.setPano(data.location.pano);
+        panorama.setPov({
+          heading: 270,
+          pitch: 0
+        });
+        panorama.setVisible(true);
+      } 
+      else {
+        console.error('Street View data not found for this location.');
+      }
     }
 
-    function getCurLoc(){
-        console.log("getCurlLoc");
-        if (navigator.geolocation){
-          console.log("yyy");
-            navigator.geolocation.getCurrentPosition(showStreet);
-            //showStreet({lat: 42.345573, lng: -71.098326});
-        }
-        else{
-          console.log("nnn");
-            showStreet({lat: 42.345573, lng: -71.098326});
-        }
-    }
+  function getCurLoc(){
+      console.log("getCurLoc");
+      if (navigator.geolocation){
+        console.log("newz - yyy");
+          navigator.geolocation.getCurrentPosition(showStreet);
+          //showStreet({lat: 42.345573, lng: -71.098326});
+      }
+      else{
+        console.log("nnn");
+          showStreet({lat: 42.345573, lng: -71.098326});
+      }
+  }
   </script>
-  <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlPrs2egoZrLaWiYzG_qAx88PpeDin5oE&callback=getCurLoc">
+  <script 
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlPrs2egoZrLaWiYzG_qAx88PpeDin5oE&callback=getCurLoc&libraries=places">
   </script>
+  <script src="./searchPlaces.js"></script>
+
 </body>
 </html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Here Now</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  
+  @media (max-width:800px){
+    #map, #pano {
+      height: 47%;
+      width: 100%;
+      position:absolute;
+    }
+    #pano{
+      top:0px;
+    }
+    #map{
+      bottom:0px;
+    }
+  }
+  @media (min-width:801px){
+    #map, #pano {
+      position:relative;
+      height: 100%;
+      width: 47%;
+    }
+    #pano{
+      float:left;
+    }
+    #map{
+      float:right;
+    }
+  }
+  /*@media (max-device-width:500px){
+    #map, #pano {
+      float: left;
+      height: 50%;
+      width: 100%;
+    }
+  }
+  @media (min-device-width:501px){
+    #map, #pano {
+      float: left;
+      height: 100%;
+      width: 50%;
+    }
+  }*/
+  
+</style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="pano"></div>
+  <script>
+    var panorama, map, sv;
+
+    function showStreet(_latLongObj) {
+      //var fenway = {lat: 42.345573, lng: -71.098326};
+      var latLongObj = {lat:_latLongObj.coords.latitude, lng:_latLongObj.coords.longitude};
+      //var latLongObj = {lat: 42.345573, lng: -71.098326};;
+
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: latLongObj,
+        zoom: 18
+      });
+      panorama = new google.maps.StreetViewPanorama(
+          document.getElementById('pano'), {
+            position: latLongObj,
+            pov: {
+              heading: 34,
+              pitch: 10
+            }
+          });
+      sv = new google.maps.StreetViewService();
+
+
+      map.setStreetView(panorama);
+      panorama.addListener('pano_changed', function() {
+            console.log("panoChange: " + panorama.getPano());
+        });
+      map.addListener('click', function(event) {
+          sv.getPanorama({location: event.latLng, radius: 50}, processSVData);
+        });
+    }
+
+    function processSVData(data, status) {
+        if (status === google.maps.StreetViewStatus.OK) {
+          /*var marker = new google.maps.Marker({
+            position: data.location.latLng,
+            map: map,
+            title: data.location.description
+          });*/
+
+          panorama.setPano(data.location.pano);
+          panorama.setPov({
+            heading: 270,
+            pitch: 0
+          });
+          panorama.setVisible(true);
+
+          /*marker.addListener('click', function() {
+            var markerPanoID = data.location.pano;
+            // Set the Pano to use the passed panoID.
+            panorama.setPano(markerPanoID);
+            panorama.setPov({
+              heading: 270,
+              pitch: 0
+            });
+            panorama.setVisible(true);
+          });*/
+        } else {
+          console.error('Street View data not found for this location.');
+        }
+      }
+
+    function getCurLoc(){
+        console.log("getCurlLoc");
+        if (navigator.geolocation){
+          console.log("newz - yyy");
+            navigator.geolocation.getCurrentPosition(showStreet);
+            //showStreet({lat: 42.345573, lng: -71.098326});
+        }
+        else{
+          console.log("nnn");
+            showStreet({lat: 42.345573, lng: -71.098326});
+        }
+    }
+  </script>
+  <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlPrs2egoZrLaWiYzG_qAx88PpeDin5oE&callback=getCurLoc">
+  </script>
+</body>
+</html>

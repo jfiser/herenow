@@ -24,22 +24,11 @@ function SearchPlaces(_input, _map, _streetView){
     this.places = [];
     this.map = _map;
     this.streetView = _streetView;
-    this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    //this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     this.searchBox = new google.maps.places.SearchBox(_input);
-    this.setBoundsChangedListener();
+    //this.setBoundsChangedListener();
     this.setPlacesChangedListener();
 };
-
-SearchPlaces.prototype.setBoundsChangedListener = function(){
-// Bias the SearchBox results towards current map's viewport.
-    var _self = this;
-    this.map.addListener('bounds_changed', function(){
-        console.log("boundschanged");
-        _self.searchBox.setBounds(this.getBounds());
-
-        //_self.streetView.getPanorama({location: event.latLng, radius: 50}, processSVData);
-    });
-}
 SearchPlaces.prototype.setPlacesChangedListener = function(){
 // Listen for the event fired when the user selects a prediction and retrieve
 // more details for that place.
@@ -70,6 +59,7 @@ SearchPlaces.prototype.setPlacesChangedListener = function(){
             };
 
             // Create a marker for each place.
+            console.log("_self.map: %o", _self.map);
             _self.markers.push(new google.maps.Marker({
                 map: _self.map,
                 icon: icon,
@@ -79,10 +69,14 @@ SearchPlaces.prototype.setPlacesChangedListener = function(){
 
             if (_place.geometry.viewport) {
                 // Only geocodes have viewport.
+                console.log("union");
                 bounds.union(_place.geometry.viewport);
+                _self.streetView.setPanorama(_place.geometry.location);
             }
             else {
+                console.log("extend");
                 bounds.extend(_place.geometry.location);
+                _self.streetView.setPanorama(_place.geometry.location);
             }
         });
         _self.map.fitBounds(bounds);

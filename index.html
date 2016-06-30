@@ -53,7 +53,7 @@
     }
   }*/
 
-/* searchBox */
+/* searchPlaces */
     .controls {
         margin-top: 10px;
         border: 1px solid transparent;
@@ -108,52 +108,21 @@
   <div id="map"></div>
   <div id="pano"></div>
   <script>
-  var panorama, map, streetView, searchBox, input;
+  var panorama, mapView, streetView, searchPlaces, input;
 
   function showStreet(_latLongObj) {
     //var fenway = {lat: 42.345573, lng: -71.098326};
     var latLongObj = {lat:_latLongObj.coords.latitude, lng:_latLongObj.coords.longitude};
     //var latLongObj = {lat: 42.345573, lng: -71.098326};;
     input = document.getElementById('pac-input');
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: latLongObj,
-      zoom: 18
-    });
-    searchBox = new SearchPlaces(input, map, streetView);
 
-    panorama = new google.maps.StreetViewPanorama(
-        document.getElementById('pano'), {
-          position: latLongObj,
-          pov: {
-            heading: 34,
-            pitch: 10
-          }
-        });
-    streetView = new google.maps.StreetViewService();
+    streetView = new StreetView(latLongObj);
+    mapView = new MapView(latLongObj, streetView);
+    searchPlaces = new SearchPlaces(input, mapView.map, streetView);
+    mapView.addSearchPlaces(searchPlaces); 
 
-
-    map.setStreetView(panorama);
-    panorama.addListener('pano_changed', function() {
-          console.log("panoChange: " + panorama.getPano());
-      });
-    map.addListener('click', function(event) {
-        streetView.getPanorama({location: event.latLng, radius: 50}, processStreetViewData);
-      });
+    //mapView.map.setStreetView(streetView.panorama); // init streetView
   }
-
-  function processStreetViewData(data, status) {
-      if (status === google.maps.StreetViewStatus.OK) {
-        panorama.setPano(data.location.pano);
-        panorama.setPov({
-          heading: 270,
-          pitch: 0
-        });
-        panorama.setVisible(true);
-      } 
-      else {
-        console.error('Street View data not found for this location.');
-      }
-    }
 
   function getCurLoc(){
       console.log("getCurLoc");
@@ -171,7 +140,9 @@
   <script 
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlPrs2egoZrLaWiYzG_qAx88PpeDin5oE&callback=getCurLoc&libraries=places">
   </script>
-  <script src="./searchPlaces.js"></script>
+  <script src="./SearchPlaces.js"></script>
+  <script src="./StreetView.js"></script>
+  <script src="./MapView.js"></script>
 
 </body>
 </html>

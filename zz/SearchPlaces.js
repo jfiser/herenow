@@ -59,15 +59,13 @@ SearchPlaces.prototype.setPlacesChangedListener = function(){
             };
 
             // Create a marker for each place.
-            console.log("_place: %o", _place);
+            console.log("_self.map: %o", _self.map);
             _self.markers.push(new google.maps.Marker({
                 map: _self.map,
                 icon: icon,
                 title: _place.name,
                 position: _place.geometry.location
             }));
-
-            //google.maps.event.addListener(_place, 'click', getDetails(results[i], i));
 
             if (_place.geometry.viewport) {
                 // Only geocodes have viewport.
@@ -85,18 +83,3 @@ SearchPlaces.prototype.setPlacesChangedListener = function(){
     });
 
 }
-SearchPlaces.prototype.showInfoWindow = function(i) {
-    return function(place, status) {
-      if (iw) {
-        iw.close();
-        iw = null;
-      }
-      
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        iw = new google.maps.InfoWindow({
-          content: getIWContent(place)
-        });
-        iw.open(map, markers[i]);        
-      }
-    }
-  }

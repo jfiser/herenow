@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Here Now</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  
+  @media (max-width:800px){
+    #map, #pano {
+      height: 47%;
+      width: 100%;
+      position:absolute;
+    }
+    #pano{
+      top:0px;
+    }
+    #map{
+      bottom:0px;
+    }
+  }
+  @media (min-width:801px){
+    #map, #pano {
+      position:relative;
+      height: 100%;
+      width: 47%;
+    }
+    #pano{
+      float:left;
+    }
+    #map{
+      float:right;
+    }
+  }
+  /*@media (max-device-width:500px){
+    #map, #pano {
+      float: left;
+      height: 50%;
+      width: 100%;
+    }
+  }
+  @media (min-device-width:501px){
+    #map, #pano {
+      float: left;
+      height: 100%;
+      width: 50%;
+    }
+  }*/
+
+/* searchPlaces */
+    .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 300px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+      #target {
+        width: 345px;
+      }
+
+
+  
+</style>
+</head>
+<body>
+  <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+  <div id="map"></div>
+  <div id="pano"></div>
+  <script>
+  var panorama, mapView, streetView, searchPlaces, input;
+
+  function showStreet(_latLongObj) {
+    //var fenway = {lat: 42.345573, lng: -71.098326};
+    var latLongObj = {lat:_latLongObj.coords.latitude, lng:_latLongObj.coords.longitude};
+    //var latLongObj = {lat: 42.345573, lng: -71.098326};;
+    input = document.getElementById('pac-input');
+
+    streetView = new StreetView(latLongObj);
+    mapView = new MapView(latLongObj, streetView);
+    searchPlaces = new SearchPlaces(input, mapView.map, streetView);
+    mapView.addSearchPlaces(searchPlaces); 
+
+    //mapView.map.setStreetView(streetView.panorama); // init streetView
+  }
+
+  function getCurLoc(){
+      console.log("getCurLoc");
+      if (navigator.geolocation){
+        console.log("newz - yyy");
+          navigator.geolocation.getCurrentPosition(showStreet);
+          //showStreet({lat: 42.345573, lng: -71.098326});
+      }
+      else{
+        console.log("nnn");
+          showStreet({lat: 42.345573, lng: -71.098326});
+      }
+  }
+  </script>
+  <script 
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlPrs2egoZrLaWiYzG_qAx88PpeDin5oE&callback=getCurLoc&libraries=places">
+  </script>
+  <script src="./SearchPlaces.js"></script>
+  <script src="./StreetView.js"></script>
+  <script src="./MapView.js"></script>
+
+</body>
+</html>

@@ -42,7 +42,7 @@ SearchPlaces.prototype.setPlacesChangedListener = function(){
         }
 
         // Clear out the old markers.
-        _self.markers.forEach(function(_marker) {
+        _self.markers.forEach(function(_marker){
             _marker.setMap(null);
         });
         _self.markers = [];

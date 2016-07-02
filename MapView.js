@@ -76,3 +76,11 @@ MapView.prototype.addMarker = function(_latLongObj){
         //zIndex: 0
     });
 }
+MapView.prototype.zoomInOut = function(_zoomInOut){
+    if(_zoomInOut == "in"){
+        this.map.setZoom(this.map.getZoom() + 1);
+    }
+    else{
+        this.map.setZoom(this.map.getZoom() - 1);
+    }
+}

@@ -10,8 +10,8 @@ function StreetView(_latLongObj){
     //var zoom = 1.1;
     // increment controls the speed of panning
     // positive values pan to the right, negatives values pan to the left
-    this.spinIncrement = 0.2;
-    this.spinInterval = 30; //30;
+    this.spinIncrement = .4;
+    this.spinInterval = 50; //30;
     this.spinIntervalId = 0;
     //this.oldPoint = _latLongObj.lngLat; 
 }
@@ -107,45 +107,30 @@ StreetView.prototype.processStreetViewData = function(data, status){
       else {
         console.error('Street View data not found for this location.');
       }
-}
-StreetView.prototype.spinPanorama = function(){
-      try {
-  		var pov = this.panorama.getPov();
-  		pov.heading += this.spinIncrement;
-  		while(pov.heading > 360.0) {
-  			pov.heading -= 360.0;
-  		}
-  		while(pov.heading < 0.0) {
-  			pov.heading += 360.0;
-  		}
-  
-  		this.panorama.setPov(pov);
-  	}catch(e){
-        console.log("caught: %o", e);
-    }
-}
-  
+}  
 StreetView.prototype.stopSpinPanorama = function(){
   	clearTimeout(this.intervalId);
 }
 StreetView.prototype.startSpinPanorama = function(){
     clearTimeout(this.intervalId);
   	var _self = this;
+    //this.spinPanoramaStartPov.heading = this.panorama.getPov().heading;
     this.intervalId = setInterval(function(){
-                        console.log("spinPanorama");
-                        try{
-                            var pov = _self.panorama.getPov();
-                            pov.heading += _self.spinIncrement;
-                            while(pov.heading > 360.0) {
-                                pov.heading -= 360.0;
-                            }
-                            while(pov.heading < 0.0) {
-                                pov.heading += 360.0;
-                            }
-                    
-                            _self.panorama.setPov(pov);
-                        }catch(e){
-                            console.log("caught: %o", e);
-                        }
-                    }, _self.spinInterval);
+                //console.log("spinPanorama");
+                try{
+                    var pov = _self.panorama.getPov();
+                    //console.log("pov.heading" + pov.heading);
+                    pov.heading += _self.spinIncrement;
+                    if(pov.heading > 360.0) {
+                        pov.heading -= 360.0;
+                    }
+                    if(pov.heading < 0.0) {
+                        pov.heading += 360.0;
+                    }
+            
+                    _self.panorama.setPov(pov);
+                }catch(e){
+                    console.log("caught: %o", e);
+                }
+            }, _self.spinInterval);
 }

@@ -11,54 +11,24 @@ html, body {
   padding: 0;
 }
   
-.flexItem{
-
+.mainHolder{
+  width:100%;
+  height:100%;
 }
   
-@media (max-width:800px){
-  #flexContainer{
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    -webkit-justify-content: space-between;
-    justify-content: space-between;
-    height:100%;
-    width:100%;
-  }
   #map, #pano {
-    height: 47%;
+    height: 49%;
     width: 100%;
+    position:absolute;
   }
   #middleBar{
-    height: 6%;
-    width: 100%;
+    height: 2%;
+    width:35px;
     background: black;
+    position:absolute;
+    left:48%;
+    top:48%;
   }
-}
-
-@media (min-width:801px){
-  #flexContainer{
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction:row;
-    flex-direction:row;
-    -webkit-justify-content: center;
-    justify-content: center;
-    height:100%;
-    width:100%;
-  }
-  #map, #pano {
-    height: 100%;
-    width: 49%;
-  }
-  #middleBar{
-    height: 100%;
-    width: 2%;
-    background: black;
-  }
-} 
-
 
 
 
@@ -148,26 +118,15 @@ html, body {
 </div>
 
   <script>
-  var panorama, mapView, streetView, searchPlaces, speechRecog, middleBar, input;
+  var main, input;
 
   function showStreet(_latLongObj) {
     //var fenway = {lat: 42.345573, lng: -71.098326};
     var latLongObj = {lat:_latLongObj.coords.latitude, lng:_latLongObj.coords.longitude};
     //var latLongObj = {lat: 42.345573, lng: -71.098326};;
     input = document.getElementById('pac-input');
+    main = new Main(latLongObj);
 
-    streetView = new StreetView(latLongObj);
-    mapView = new MapView(latLongObj, streetView);
-    searchPlaces = new SearchPlaces(input, mapView.map, streetView);
-    speechRecog = new SpeechRecognition(streetView);
-    middleBar = new MiddleBar(mapView, streetView, document.getElementById('middleBar'));
-    mapView.addSearchPlaces(searchPlaces);
-
-    $( "#flexContainer" ).on( "mousemove", function( event ) {
-        console.log( "pageX: " + event.pageX + ", pageY: " + event.pageY );
-    });
-
-    //mapView.map.setStreetView(streetView.panorama); // init streetView
   }
 
   function getCurLoc(){
@@ -188,6 +147,7 @@ html, body {
   <script 
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlPrs2egoZrLaWiYzG_qAx88PpeDin5oE&callback=getCurLoc&libraries=places">
   </script>
+  <script src="./js/Main.js"></script>
   <script src="./js/SearchPlaces.js"></script>
   <script src="./js/StreetView.js"></script>
   <script src="./js/MiddleBar.js"></script>

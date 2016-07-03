@@ -1,5 +1,6 @@
 function MapView(_latLongObj, _streetView){
     this.streetView = _streetView;
+    this.streetView.mapView = this; // map reference for streetView
     this.addMap(_latLongObj);
 }
 MapView.prototype.addSearchPlaces = function(_searchPlaces){

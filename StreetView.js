@@ -6,6 +6,13 @@ function StreetView(_latLongObj){
     this.fixPanoTries = 0;
     this.fixPanoId = 0;
     this.heading = 34;
+
+    //var zoom = 1.1;
+    // increment controls the speed of panning
+    // positive values pan to the right, negatives values pan to the left
+    this.spinIncrement = 0.2;
+    this.spinInterval = 30; //30;
+    this.spinIntervalId = 0;
     //this.oldPoint = _latLongObj.lngLat; 
 }
 StreetView.prototype.addPanorama = function(_latLongObj){
@@ -35,6 +42,7 @@ StreetView.prototype.addPanorama = function(_latLongObj){
             if(++_self.fixPanoTries > 3){
                 clearInterval(_self.fixPanoId);
                 _self.fixPanoTries = 0;
+                _self.startSpinPanorama();
             }
         }
         
@@ -44,9 +52,12 @@ StreetView.prototype.setPanorama = function(_latLongObj){
     var _self = this;
     this.clickLatLongObj = _latLongObj;
     var myLatLongObj = {lat:_latLongObj.lat(), lng:_latLongObj.lng()};
-
-
-    this.streetViewSvc.getPanorama({location: myLatLongObj, radius: 550}, 
+    
+    var mapZoom = this.mapView.map.getZoom();
+    var myRadius = 11000 / (mapZoom < 10 ? mapZoom / 10 : mapZoom);
+    console.log("getZoom(): " + this.mapView.map.getZoom());
+    console.log("myRadius: " + myRadius);
+    this.streetViewSvc.getPanorama({location: myLatLongObj, radius: myRadius}, 
         function(data, status){
             console.log("_self,newPt: %o", _self.clickLatLongObj);
             console.log("_self,oldPt: %o", _self.curYellowManLatLng);
@@ -96,4 +107,45 @@ StreetView.prototype.processStreetViewData = function(data, status){
       else {
         console.error('Street View data not found for this location.');
       }
+}
+StreetView.prototype.spinPanorama = function(){
+      try {
+  		var pov = this.panorama.getPov();
+  		pov.heading += this.spinIncrement;
+  		while(pov.heading > 360.0) {
+  			pov.heading -= 360.0;
+  		}
+  		while(pov.heading < 0.0) {
+  			pov.heading += 360.0;
+  		}
+  
+  		this.panorama.setPov(pov);
+  	}catch(e){
+        console.log("caught: %o", e);
+    }
+}
+  
+StreetView.prototype.stopSpinPanorama = function(){
+  	clearTimeout(this.intervalId);
+}
+StreetView.prototype.startSpinPanorama = function(){
+    clearTimeout(this.intervalId);
+  	var _self = this;
+    this.intervalId = setInterval(function(){
+                        console.log("spinPanorama");
+                        try{
+                            var pov = _self.panorama.getPov();
+                            pov.heading += _self.spinIncrement;
+                            while(pov.heading > 360.0) {
+                                pov.heading -= 360.0;
+                            }
+                            while(pov.heading < 0.0) {
+                                pov.heading += 360.0;
+                            }
+                    
+                            _self.panorama.setPov(pov);
+                        }catch(e){
+                            console.log("caught: %o", e);
+                        }
+                    }, _self.spinInterval);
 }

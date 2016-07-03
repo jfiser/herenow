@@ -35,19 +35,20 @@ MapView.prototype.addMap = function(_latLongObj){
     });
     this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     
-    /*this.map.addListener('bounds_changed', function(){
+    this.map.addListener('bounds_changed', function(){
         console.log("boundschanged");
-        if(this.searchPlaces){
+        google.maps.event.trigger(this, 'resize');
+        /*if(this.searchPlaces){
             this.searchPlaces.searchBox.setBounds(this.getBounds());
         }
         console.log("getCenter: %o", this.getBounds().getCenter().lat())
         var _latLongObj = {lat:this.getBounds().getCenter().lat(), lng:this.getBounds().getCenter().lng()};
-        _self.streetView.setPanorama(_latLongObj);
+        _self.streetView.setPanorama(_latLongObj);*/
         
         //this.setStreetView(_self.streetView.panorama);
 
         //_self.streetView.getPanorama({location: event.latLng, radius: 50}, processSVData);
-    });*/
+    });
     
     this.map.setStreetView(this.streetView.panorama);
 }

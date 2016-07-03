@@ -5,39 +5,65 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Here Now</title>
 <style>
-  html, body {
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+  
+.flexItem{
+
+}
+  
+@media (max-width:800px){
+  #flexContainer{
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    height:100%;
+    width:100%;
+  }
+  #map, #pano {
+    height: 47%;
+    width: 100%;
+  }
+  #middleBar{
+    height: 6%;
+    width: 100%;
+    background: black;
+  }
+}
+
+@media (min-width:801px){
+  #flexContainer{
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction:row;
+    flex-direction:row;
+    -webkit-justify-content: center;
+    justify-content: center;
+    height:100%;
+    width:100%;
+  }
+  #map, #pano {
     height: 100%;
-    margin: 0;
-    padding: 0;
+    width: 49%;
   }
-  
-  
-  @media (max-width:800px){
-    #map, #pano {
-      height: 47%;
-      width: 100%;
-      position:absolute;
-    }
-    #pano{
-      top:0px;
-    }
-    #map{
-      bottom:0px;
-    }
+  #middleBar{
+    height: 100%;
+    width: 2%;
+    background: black;
   }
-  @media (min-width:801px){
-    #map, #pano {
-      position:relative;
-      height: 100%;
-      width: 47%;
-    }
-    #pano{
-      float:left;
-    }
-    #map{
-      float:right;
-    }
-  }
+} 
+
+
+
+
+
+
   /*@media (max-device-width:500px){
     #map, #pano {
       float: left;
@@ -112,12 +138,17 @@
 </style>
 </head>
 <body>
-  <div id="txtBox">xzxz xcxc</div>
-  <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+
+<div id="txtBox">xzxz xcxc</div>
+<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+<div id="flexContainer">
   <div id="map"></div>
+  <div id="middleBar"></div>
   <div id="pano"></div>
+</div>
+
   <script>
-  var panorama, mapView, streetView, searchPlaces, speechRecog, input;
+  var panorama, mapView, streetView, searchPlaces, speechRecog, middleBar, input;
 
   function showStreet(_latLongObj) {
     //var fenway = {lat: 42.345573, lng: -71.098326};
@@ -129,7 +160,12 @@
     mapView = new MapView(latLongObj, streetView);
     searchPlaces = new SearchPlaces(input, mapView.map, streetView);
     speechRecog = new SpeechRecognition(streetView);
-    mapView.addSearchPlaces(searchPlaces); 
+    middleBar = new MiddleBar(mapView, streetView, document.getElementById('middleBar'));
+    mapView.addSearchPlaces(searchPlaces);
+
+    $( "#flexContainer" ).on( "mousemove", function( event ) {
+        console.log( "pageX: " + event.pageX + ", pageY: " + event.pageY );
+    });
 
     //mapView.map.setStreetView(streetView.panorama); // init streetView
   }
@@ -147,13 +183,21 @@
       }
   }
   </script>
+
+  <script src="./js/jquery-3.0.0.min.js"></script>
   <script 
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlPrs2egoZrLaWiYzG_qAx88PpeDin5oE&callback=getCurLoc&libraries=places">
   </script>
-  <script src="./SearchPlaces.js"></script>
-  <script src="./StreetView.js"></script>
-  <script src="./MapView.js"></script>
-  <script src="./annyang.min.js"></script>
-  <script src="./SpeechRecognition.js"></script>
+  <script src="./js/SearchPlaces.js"></script>
+  <script src="./js/StreetView.js"></script>
+  <script src="./js/MiddleBar.js"></script>
+  <script src="./js/MapView.js"></script>
+  <script src="./js/annyang.min.js"></script>
+  <script src="./js/SpeechRecognition.js"></script>
+  <script src=./js/TweenMax.min.js></script>
+  <script src=./js/plugins/CSSPlugin.min.js>
+  </script><script src=./js/plugins/ThrowPropsPlugin.min.js>
+  </script><script src=./js/EasePack.min.js></script>
+  <script src=./js/utils/Draggable.min.js></script>
 </body>
 </html>

@@ -42,7 +42,7 @@ StreetView.prototype.addPanorama = function(_latLongObj){
             if(++_self.fixPanoTries > 3){
                 clearInterval(_self.fixPanoId);
                 _self.fixPanoTries = 0;
-                _self.startSpinPanorama();
+                //_self.startSpinPanorama();
             }
         }
         

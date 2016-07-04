@@ -1,4 +1,6 @@
 function SpeechRecognition(_mapView, _streetView){
+    return;
+    
     this.mapView = _mapView;
     this.streetView = _streetView;
     if (annyang){

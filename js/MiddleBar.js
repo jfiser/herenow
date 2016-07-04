@@ -1,4 +1,5 @@
-function MiddleBar(_mapView, _streetView, _middleBarEl){
+function MiddleBar(_main, _mapView, _streetView, _middleBarEl){
+    this.main = _main;
     this.mapView = _mapView;
     this.streetView = _streetView;
     this.middleBarEl = _middleBarEl;
@@ -9,6 +10,62 @@ function MiddleBar(_mapView, _streetView, _middleBarEl){
     
 }
 MiddleBar.prototype.setMiddleBarDraggable = function(){
+    var cur_x = 0, cur_y = 0;
+    var $middleBarEl = $("#middleBar");
+    var _self = this;
+
+    this.myHammer = new Hammer(this.middleBarEl, {dragLockToAxis: true//,
+                                                //dragBlockHorizontal: true
+                                            });
+                                                
+    this.myHammer.on("swipeleft swiperight dragright dragleft dragup dragdown dragstart dragend", function(evt){
+        evt.preventDefault();
+        // So we don't process mouseEvents here.
+        if(evt.gesture == undefined){
+           return;
+        }
+        switch(evt.type){
+            case "swipeleft":
+                console.log("swipeleft");
+                break;
+            //case "dragright":
+            case "swiperight":
+                console.log("swiperight");
+                break;
+            case "dragstart":
+                console.log("dragstart");
+                cur_x = $middleBarEl.position().left;
+                cur_y = $middleBarEl.position().top;
+                break;
+            case "dragend":
+                console.log("dragend");
+                _self.resizeMapAndPano();
+                google.maps.event.trigger(_self.mapView.map, "resize");
+                google.maps.event.trigger(_self.streetView.panorama, "resize");
+                break;
+            case "dragright":
+                $middleBarEl.css("left", (cur_x + evt.gesture.deltaX) + "px");
+                _self.resizeMapAndPano();
+                console.log("deltaX: " + evt.gesture.deltaX);
+                break;
+            case "dragleft":
+                $middleBarEl.css("left", (cur_x + evt.gesture.deltaX) + "px");
+                _self.resizeMapAndPano();
+                break;
+            case "dragup":
+                $middleBarEl.css("top", (cur_y + evt.gesture.deltaY) + "px");
+                _self.resizeMapAndPano();
+                console.log("deltaX: " + evt.gesture.deltaX);
+                break;
+            case "dragdown":
+                $middleBarEl.css("top", (cur_y + evt.gesture.deltaY) + "px");
+                _self.resizeMapAndPano();
+                break;
+            }
+        });
+}
+
+/*MiddleBar.prototype.setMiddleBarDraggable2 = function(){
     var _self = this;
 
     this.middleBarDrag = Draggable.create("#middleBar", {type:"top,left", 
@@ -42,40 +99,10 @@ MiddleBar.prototype.setMiddleBarDraggable = function(){
             lockaxis:true
 
         });                                     
-}
-MiddleBar.prototype.resizeMapAndPano = function(_evt){
-    /*var zz = parseInt($("#middleBar").css("left"));
-    console.log("zz: " + zz);
-    if(isNaN(zz)){
-        console.log("ISNAN - return");
-        return;
-    }*/
-    if($(window).width() > 800){
-        $("#map").width(_evt.pageX);
-        //$("#map").width(parseInt($("#middleBar").css("left")));
-        console.log("_evt.pageX: " + _evt.pageX);
-        console.log("css(left): " + parseInt($("#middleBar").css("left")));
-
-        $("#pano").width($("#flexContainer").width() 
-                                        - $("#map").width()
-                                        - $("#middleBar").width());
-        $("#map").height("auto");
-        $("#pano").height("auto");
-    }
-    else{
-        console.log("_evt %o: ", _evt);
-        //console.log("_evt.target.offsetTop: " + _evt.target.offsetTop);
-        //console.log("_evt.pageX: " + _evt.pageX);
-        $("#map").height(_evt.pageY);
-        //$("#map").height(_evt.target.offsetTop);
-        //$("#map").height(parseInt($("#middleBar").css("top")));
-        //$("#map").height(_evt.y);
-        $("#pano").height($("#flexContainer").height() 
-                                        - $("#map").height()
-                                        - $("#middleBar").height());
-        $("#map").width("auto");
-        $("#pano").width("auto");
-    }
+}*/
+MiddleBar.prototype.resizeMapAndPano = function(){
+    this.main.windowResize();
+    return;
 }
 
 

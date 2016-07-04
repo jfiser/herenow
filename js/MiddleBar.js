@@ -38,7 +38,7 @@ MiddleBar.prototype.setMiddleBarDraggable = function(){
                 cur_y = $middleBarEl.position().top;
                 break;
             case "dragend":
-                console.log("dragend");
+                //console.log("dragend");
                 _self.resizeMapAndPano();
                 google.maps.event.trigger(_self.mapView.map, "resize");
                 google.maps.event.trigger(_self.streetView.panorama, "resize");

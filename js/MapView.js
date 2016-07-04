@@ -1,4 +1,5 @@
-function MapView(_latLongObj, _streetView){
+function MapView(_main, _latLongObj, _streetView){
+    this.main = _main;
     this.streetView = _streetView;
     this.streetView.mapView = this; // map reference for streetView
     this.addMap(_latLongObj);
@@ -38,6 +39,8 @@ MapView.prototype.addMap = function(_latLongObj){
     this.map.addListener('bounds_changed', function(){
         console.log("boundschanged");
         google.maps.event.trigger(this, 'resize');
+        _self.main.windowResize();
+
         /*if(this.searchPlaces){
             this.searchPlaces.searchBox.setBounds(this.getBounds());
         }

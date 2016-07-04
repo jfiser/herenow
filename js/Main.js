@@ -1,6 +1,6 @@
 function Main(_latLongObj){
     this.streetView = new StreetView(_latLongObj);
-    this.mapView = new MapView(_latLongObj, this.streetView);
+    this.mapView = new MapView(this, _latLongObj, this.streetView);
     this.searchPlaces = new SearchPlaces(input, this.mapView.map, this.streetView);
     this.speechRecog = new SpeechRecognition(this.streetView);
     this.middleBar = new MiddleBar(this, this.mapView, this.streetView, 

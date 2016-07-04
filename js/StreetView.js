@@ -5,12 +5,13 @@ function StreetView(_latLongObj){
     this.curYellowManLatLng = new google.maps.LatLng({lat: _latLongObj.lat, lng: _latLongObj.lng}); 
     this.fixPanoTries = 0;
     this.fixPanoId = 0;
-    this.heading = 34;
+    this.heading = 90;
+    this.spinPanoramaStartHeading = 90;
 
     //var zoom = 1.1;
     // increment controls the speed of panning
     // positive values pan to the right, negatives values pan to the left
-    this.spinIncrement = .4;
+    this.spinIncrement = .5;
     this.spinInterval = 50; //30;
     this.spinIntervalId = 0;
     //this.oldPoint = _latLongObj.lngLat; 
@@ -32,7 +33,7 @@ StreetView.prototype.addPanorama = function(_latLongObj){
         var _pano = this;
         clearInterval(_self.fixPanoId);
         _self.fixPanoId = setInterval(fixPanoTiles, 200);
-        
+    
         function fixPanoTiles(){
             console.log("setTimeout");
             _pano.setPov({
@@ -42,7 +43,7 @@ StreetView.prototype.addPanorama = function(_latLongObj){
             if(++_self.fixPanoTries > 3){
                 clearInterval(_self.fixPanoId);
                 _self.fixPanoTries = 0;
-                //_self.startSpinPanorama();
+                _self.startSpinPanorama();
             }
         }
         
@@ -113,7 +114,10 @@ StreetView.prototype.stopSpinPanorama = function(){
 }
 StreetView.prototype.startSpinPanorama = function(){
     clearTimeout(this.intervalId);
+    //clearInterval(this.fixPanoId);
   	var _self = this;
+    this.need_spinPanoramaStartHeading = true;
+    console.log("this.spinPanoramaStartHeading: " + this.spinPanoramaStartHeading);
     //this.spinPanoramaStartPov.heading = this.panorama.getPov().heading;
     this.intervalId = setInterval(function(){
                 //console.log("spinPanorama");
@@ -127,8 +131,18 @@ StreetView.prototype.startSpinPanorama = function(){
                     if(pov.heading < 0.0) {
                         pov.heading += 360.0;
                     }
-            
                     _self.panorama.setPov(pov);
+                    console.log("pov", pov.heading);
+
+                    if(pov.heading < _self.spinPanoramaStartHeading-1
+                             && pov.heading > _self.spinPanoramaStartHeading-5){
+                        _self.stopSpinPanorama();
+                    }
+                    // only do this once per spin
+                    if(_self.need_spinPanoramaStartHeading){
+                        _self.need_spinPanoramaStartHeading = false;
+                        _self.spinPanoramaStartHeading = pov.heading;
+                    }
                 }catch(e){
                     console.log("caught: %o", e);
                 }

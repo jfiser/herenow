@@ -13,7 +13,7 @@ MapView.prototype.addMap = function(_latLongObj){
     this.map = (new google.maps.Map(document.getElementById('map'), {
       center: _latLongObj,
       mapTypeId: google.maps.MapTypeId.SATELLITE,
-      zoom: 18
+      zoom: 3
     }));
 
     this.map.addListener('click', function(event) {

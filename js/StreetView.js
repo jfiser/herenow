@@ -36,10 +36,10 @@ StreetView.prototype.addPanorama = function(_latLongObj){
     
         function fixPanoTiles(){
             console.log("setTimeout");
-            _pano.setPov({
-                    heading: _self.heading,
-                    pitch: 0
-                });
+            //_pano.setPov({
+                   // heading: _self.heading,
+                   // pitch: 0
+                //});
             if(++_self.fixPanoTries > 3){
                 clearInterval(_self.fixPanoId);
                 _self.fixPanoTries = 0;
@@ -93,22 +93,6 @@ StreetView.prototype.setPanorama = function(_latLongObj){
         });
     //sv.getPanorama({location: event.latLng, radius: 50}, processSVData);
 }
-StreetView.prototype.processStreetViewData = function(data, status){
-      var _self = this;
-      if (status === google.maps.StreetViewStatus.OK){
-            //if(this.panorama){
-                _self.panorama.setPano(data.location.pano);
-                _self.panorama.setPov({
-                    heading: 270,
-                    pitch: 0
-                });
-                _self.panorama.setVisible(true);
-            //}
-      } 
-      else {
-        console.error('Street View data not found for this location.');
-      }
-}  
 StreetView.prototype.stopSpinPanorama = function(){
   	clearTimeout(this.intervalId);
 }
@@ -132,7 +116,7 @@ StreetView.prototype.startSpinPanorama = function(){
                         pov.heading += 360.0;
                     }
                     _self.panorama.setPov(pov);
-                    console.log("pov", pov.heading);
+                    //console.log("pov", pov.heading);
 
                     if(pov.heading < _self.spinPanoramaStartHeading-1
                              && pov.heading > _self.spinPanoramaStartHeading-5){

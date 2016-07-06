@@ -4,6 +4,7 @@ function MiddleBar(_main, _mapView, _streetView, _middleBarEl){
     this.streetView = _streetView;
     this.middleBarEl = _middleBarEl;
     this.setMiddleBarDraggable();
+    this.setBtnListeners()
     $(window).resize = function(){
         //resizeMapAndPano(evt);
     }
@@ -63,6 +64,21 @@ MiddleBar.prototype.setMiddleBarDraggable = function(){
                 break;
             }
         });
+}
+MiddleBar.prototype.setBtnListeners = function(){
+    var _self = this;
+
+    $("#homeBtn").click(function(){
+        if(_self.streetView.panoSpinning){
+            _self.streetView.stopSpinPanorama();
+            _self.streetView.panoSpinState = "off";
+        }
+        else{
+            _self.streetView.startSpinPanorama();
+            _self.streetView.panoSpinState = "on";
+        }
+        console.log("panoState: " + _self.streetView.panoSpinState)
+    })
 }
 
 /*MiddleBar.prototype.setMiddleBarDraggable2 = function(){

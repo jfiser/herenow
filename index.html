@@ -106,7 +106,9 @@ html, body {
         display:none;
       }
 
+      #homeBtn{
 
+      }
   
 </style>
 </head>
@@ -116,8 +118,16 @@ html, body {
 <input id="pac-input" class="controls" type="text" placeholder="Search Box">
 <div id="mainHolder">
   <div id="map"></div>
-  <div id="middleBar"></div>
+  <div id="middleBar">
+    <svg id="homeBtn" height="60" width="60">
+      <circle cx="17" cy="16" r="16" stroke="rgb(0,123,255)" stroke-width="2" fill="rgb(0,123,255)" />
+    </svg>
+    <svg id="birdsEyeBtn" height="60" width="60">
+      <circle cx="17" cy="17" r="17" stroke="0099ff" stroke-width="2" fill="white" />
+    </svg>
+  </div>
   <div id="pano"></div>
+
 </div>
 
 

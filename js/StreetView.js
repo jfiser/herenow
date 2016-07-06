@@ -7,6 +7,7 @@ function StreetView(_latLongObj){
     this.fixPanoId = 0;
     this.heading = 90;
     this.spinPanoramaStartHeading = 90;
+    this.panoSpinning = false;
 
     //var zoom = 1.1;
     // increment controls the speed of panning
@@ -14,6 +15,7 @@ function StreetView(_latLongObj){
     this.spinIncrement = .5;
     this.spinInterval = 50; //30;
     this.spinIntervalId = 0;
+    this.panoSpinState = "on"; // off, on
     //this.oldPoint = _latLongObj.lngLat; 
 }
 StreetView.prototype.addPanorama = function(_latLongObj){
@@ -29,21 +31,28 @@ StreetView.prototype.addPanorama = function(_latLongObj){
     });
 
     this.panorama.addListener('pano_changed', function(){
-        console.log("panoChange: " + this.getPano());
         var _pano = this;
-        clearInterval(_self.fixPanoId);
-        _self.fixPanoId = setInterval(fixPanoTiles, 200);
+        
+        console.log("panoChange: " + this.getPano());
+         //clearInterval(_self.fixPanoId);
+        //_self.fixPanoId = setInterval(fixPanoTiles, 200);
+        if(_self.panoSpinState == "on"){
+            _self.startSpinPanorama();
+        }
+        else{
+            _self.fixPanoId = setInterval(fixPanoTiles, 200);
+        }
     
         function fixPanoTiles(){
-            console.log("setTimeout");
-            //_pano.setPov({
-                   // heading: _self.heading,
-                   // pitch: 0
-                //});
+            console.log("fixPanoTiles");
+            _pano.setPov({
+                    heading: _self.heading,
+                    pitch: 0
+                });
             if(++_self.fixPanoTries > 3){
                 clearInterval(_self.fixPanoId);
                 _self.fixPanoTries = 0;
-                _self.startSpinPanorama();
+                //_self.startSpinPanorama();
             }
         }
         
@@ -94,16 +103,18 @@ StreetView.prototype.setPanorama = function(_latLongObj){
     //sv.getPanorama({location: event.latLng, radius: 50}, processSVData);
 }
 StreetView.prototype.stopSpinPanorama = function(){
-  	clearTimeout(this.intervalId);
+  	clearTimeout(this.spinIntervalId);
+    this.panoSpinning = false;
 }
 StreetView.prototype.startSpinPanorama = function(){
-    clearTimeout(this.intervalId);
+    clearTimeout(this.spinIntervalId);
     //clearInterval(this.fixPanoId);
   	var _self = this;
     this.need_spinPanoramaStartHeading = true;
+    this.panoSpinning = true;
     console.log("this.spinPanoramaStartHeading: " + this.spinPanoramaStartHeading);
     //this.spinPanoramaStartPov.heading = this.panorama.getPov().heading;
-    this.intervalId = setInterval(function(){
+    this.spinIntervalId = setInterval(function(){
                 //console.log("spinPanorama");
                 try{
                     var pov = _self.panorama.getPov();

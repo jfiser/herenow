@@ -68,17 +68,32 @@ MiddleBar.prototype.setMiddleBarDraggable = function(){
 MiddleBar.prototype.setBtnListeners = function(){
     var _self = this;
 
-    $("#homeBtn").click(function(){
+    $("#playBtn").click(function(){
         if(_self.streetView.panoSpinning){
             _self.streetView.stopSpinPanorama();
             _self.streetView.panoSpinState = "off";
+            //$("#playIcon").show();
+            //$("#pauseIcon").hide();
         }
         else{
             _self.streetView.startSpinPanorama();
             _self.streetView.panoSpinState = "on";
+            //$("#playIcon").hide();
+            //$("#pauseIcon").show();
         }
+        _self.handlePausePlayBtns();
         console.log("panoState: " + _self.streetView.panoSpinState)
     })
+}
+MiddleBar.prototype.handlePausePlayBtns = function(){
+    if(this.streetView.panoSpinning){
+        $("#playIcon").hide();
+        $("#pauseIcon").show();
+    }
+    else{
+        $("#playIcon").show();
+        $("#pauseIcon").hide();
+    }
 }
 
 /*MiddleBar.prototype.setMiddleBarDraggable2 = function(){

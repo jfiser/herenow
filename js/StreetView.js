@@ -1,4 +1,5 @@
-function StreetView(_latLongObj){
+function StreetView(_main, _latLongObj){
+    this.main = _main;
     this.addPanorama(_latLongObj);
     this.streetViewSvc = new google.maps.StreetViewService();
     //this.oldPoint = _latLongObj;
@@ -26,10 +27,13 @@ StreetView.prototype.addPanorama = function(_latLongObj){
           position: _latLongObj,
           pov: {
             heading: 34,
-            pitch: 10
+            pitch: 0
           }
     });
-
+    this.panorama.addListener('pov_changed', function(){
+        _self.heading = this.getPov().heading;
+    });
+    // When a new pano comes in (new panoId)
     this.panorama.addListener('pano_changed', function(){
         var _pano = this;
         
@@ -100,11 +104,11 @@ StreetView.prototype.setPanorama = function(_latLongObj){
                 console.error('Street View data not found for this location.');
             }
         });
-    //sv.getPanorama({location: event.latLng, radius: 50}, processSVData);
 }
 StreetView.prototype.stopSpinPanorama = function(){
   	clearTimeout(this.spinIntervalId);
     this.panoSpinning = false;
+    this.main.middleBar.handlePausePlayBtns();
 }
 StreetView.prototype.startSpinPanorama = function(){
     clearTimeout(this.spinIntervalId);
@@ -112,6 +116,7 @@ StreetView.prototype.startSpinPanorama = function(){
   	var _self = this;
     this.need_spinPanoramaStartHeading = true;
     this.panoSpinning = true;
+    this.main.middleBar.handlePausePlayBtns();
     console.log("this.spinPanoramaStartHeading: " + this.spinPanoramaStartHeading);
     //this.spinPanoramaStartPov.heading = this.panorama.getPov().heading;
     this.spinIntervalId = setInterval(function(){
@@ -129,9 +134,11 @@ StreetView.prototype.startSpinPanorama = function(){
                     _self.panorama.setPov(pov);
                     //console.log("pov", pov.heading);
 
+                    // find the end of the spin
                     if(pov.heading < _self.spinPanoramaStartHeading-1
                              && pov.heading > _self.spinPanoramaStartHeading-5){
                         _self.stopSpinPanorama();
+                        _self.spinPanoramaStartHeading = pov.heading;
                     }
                     // only do this once per spin
                     if(_self.need_spinPanoramaStartHeading){

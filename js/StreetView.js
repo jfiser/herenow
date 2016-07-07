@@ -13,8 +13,8 @@ function StreetView(_main, _latLongObj){
     //var zoom = 1.1;
     // increment controls the speed of panning
     // positive values pan to the right, negatives values pan to the left
-    this.spinIncrement = .5;
-    this.spinInterval = 50; //30;
+    this.spinIncrement = .4;
+    this.spinInterval = 40; //30;
     this.spinIntervalId = 0;
     this.panoSpinState = "on"; // off, on
     //this.oldPoint = _latLongObj.lngLat; 
@@ -23,13 +23,17 @@ StreetView.prototype.addPanorama = function(_latLongObj){
     var _self = this;
 
     this.panorama = new google.maps.StreetViewPanorama(
-        document.getElementById('pano'), {
-          position: _latLongObj,
-          pov: {
-            heading: 34,
-            pitch: 0
-          }
+    document.getElementById('pano'), {
+                position: _latLongObj,
+                pov: {
+                    heading: 34,
+                    pitch: 0
+                },
+                linksControl: false,
+                panControl: false,
+                enableCloseButton: false
     });
+
     this.panorama.addListener('pov_changed', function(){
         _self.heading = this.getPov().heading;
     });

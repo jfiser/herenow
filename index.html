@@ -37,6 +37,7 @@ html, body {
     left:48%;
     top:48%;
     z-index:10;
+    cursor: e-resize;
   }
 
 /* searchPlaces */
@@ -105,6 +106,7 @@ html, body {
   line-height:35px;
   margin-left:2px;
   margin-top:2px;
+  cursor: pointer;
 }
 .middleBarBtnIcons{
   width:25px;
@@ -199,6 +201,7 @@ html, body {
 
   function showStreet(_latLongObj) {
     //var fenway = {lat: 42.345573, lng: -71.098326};
+    //console.log("showStreet lat/long: " + _latLongObj.coords.latitude + ":" + _latLongObj.coords.longitude);
     var latLongObj = {lat:_latLongObj.coords.latitude, lng:_latLongObj.coords.longitude};
     //var latLongObj = {lat: 42.345573, lng: -71.098326};;
     input = document.getElementById('pac-input');
@@ -209,15 +212,43 @@ html, body {
   function getCurLoc(){
       console.log("getCurLoc");
       if (navigator.geolocation){
-        console.log("newz - yyy");
-          navigator.geolocation.getCurrentPosition(showStreet);
+        console.log("newz - xxxyyy");
+        navigator.geolocation.getCurrentPosition(showStreet, getLocError);
+        console.log("newz - after");
           //showStreet({lat: 42.345573, lng: -71.098326});
       }
       else{
         console.log("nnn");
-          showStreet({lat: 42.345573, lng: -71.098326});
+        var obj1 = {latitude:40.73685214795608, longitude:-73.99154663085938};
+        var obj2 = {coords:obj1};
+        showStreet(obj2);
       }
   }
+  function getLocError(err) {
+    console.warn('ERROR(' + err.code + '): ' + err.message);
+    var obj1 = {latitude:40.73685214795608, longitude:-73.99154663085938};
+    var obj2 = {coords:obj1};
+    showStreet(obj2);
+    switch(err.code) {
+        case err.PERMISSION_DENIED:
+            console.warn("User denied the request for Geolocation.");
+            break;
+        case err.POSITION_UNAVAILABLE:
+            console.warn("Location information is unavailable.");
+            break;
+        case err.TIMEOUT:
+            console.warn("The request to get user location timed out.");
+            break;
+        case err.UNKNOWN_ERROR:
+            console.warn("An unknown error occurred.");
+            break;
+        default:
+            console.warn("An unknown error occurred (default).");
+            break;
+
+    }
+  }
+
 </script>
   <script 
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlPrs2egoZrLaWiYzG_qAx88PpeDin5oE&callback=getCurLoc&libraries=places">

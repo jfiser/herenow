@@ -20,8 +20,8 @@ MapView.prototype.addMap = function(_latLongObj){
         //_self.streetView.streetViewSvc.getPanorama({location: event.latLng, radius: 50}, processStreetViewData);
         
         //console.log("evt: %o", event.latLng.lat());
-        console.log("evt: %o", event.latLng.lat());
-        console.log("evt: %o", event.latLng.lng());
+        console.log("lat: %o", event.latLng.lat());
+        console.log("lng: %o", event.latLng.lng());
         var myLatLongObj = {lat:event.latLng.lat(), lng:event.latLng.lng()};
         //_self.addMarker(myLatLongObj);
         //_self.streetView.setPanorama(myLatLongObj);

@@ -6,11 +6,18 @@ function Main(_latLongObj){
     this.middleBar = new MiddleBar(this, this.mapView, this.streetView, 
                                         document.getElementById('middleBar'));
     this.mapView.addSearchPlaces(this.searchPlaces);
+    this.handleTouchDevices();
     var _self = this;
+
     $(window).resize(function(){
         _self.windowResize();
     });
     this.windowResize();
+}
+Main.prototype.handleTouchDevices = function(){
+    if(this.isTouchDevice()){
+        $(".tooltiptext").css("visibility", "hidden");
+    }  
 }
 Main.prototype.windowResize = function(){
     var middleBarLoc;
@@ -53,7 +60,7 @@ Main.prototype.windowResize = function(){
         $("#pano").css("left", 0);
         $("#pano").css("top", 0);
 
-        $("#middleBar").height("35px");
+        $("#middleBar").height("43px");
         $("#middleBar").width("100%");
         $("#middleBar").css("top", middleBarLoc);
         $("#middleBar").css("left", 0);
@@ -68,5 +75,10 @@ Main.prototype.windowResize = function(){
         $("#map").width("100%");
         $("#map").css("left", 0);
         $("#map").css("bottom", 0);
-    }     
+    }
 }
+Main.prototype.isTouchDevice = function(){
+  var bool = 'ontouchstart' in window || navigator.maxTouchPoints;
+  console.log("touch?: " + bool);
+  return(bool); 
+};
